@@ -7,7 +7,7 @@ struct Tile
     unsigned int room;
     unsigned int col;
     unsigned int row;
-    char type;
+    char type = '.';
 };
 
 #endif

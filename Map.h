@@ -31,7 +31,7 @@ private:
 	std::vector<std::vector<std::vector<Tile>>> layout;
 
 	//Location of starting and ending positions
-	unsigned int room_start, row_start, col_start, room_end, col_end, row_end;
+	unsigned int room_start, col_start, row_start, room_end, col_end, row_end;
 
 public:
 	Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode);
@@ -45,7 +45,7 @@ public:
 	//Read in list-form data
 	void read_list();
 
-	bool check_legal_coord(char dimension, unsigned int coord);
+	bool check_legal_coord(std::string dimension, unsigned int coord);
 };
 
 Map::Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode) : num_rooms(in_num_rooms),
@@ -188,19 +188,19 @@ void Map::read_map()
 void Map::read_list()
 {
 	unsigned int room, col, row;
-	char type;
-	std::string junk;
+	char type, junk;
+	std::string junk_line;
 
 	while (std::cin >> type)
 	{
 		//Check for comments
 		if (type == '/')
 		{
-			std::getline(std::cin, junk);
+			std::getline(std::cin, junk_line);
 			continue;
 		}
 
-		std::cin >> room >> junk >> col >> junk >> row >> junk;
+		std::cin >> room >> junk >> row >> junk >> col >> junk >> type >> junk;
 
 		//Check for illegal entries
 		if (!check_legal_type(type))
@@ -210,8 +210,8 @@ void Map::read_list()
 		}
 
 		//Check for illegal coordinates
-		if (!check_legal_coord('r', room) || !check_legal_coord('c', col) ||
-			!check_legal_coord('r', row))
+		if (!check_legal_coord("room", room) || !check_legal_coord("col", col) ||
+			!check_legal_coord("row", row))
 		{
 			std::cerr << "Illegal coordinates\n";
 			exit(1);
@@ -237,9 +237,9 @@ void Map::read_list()
 	}
 }
 
-bool Map::check_legal_coord(char dimension, unsigned int coord)
+bool Map::check_legal_coord(std::string dimension, unsigned int coord)
 {
-	if (dimension == 'r')
+	if (dimension == "room")
 		return coord < num_rooms;
 	return coord < size_room;
 }
