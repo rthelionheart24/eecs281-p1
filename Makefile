@@ -28,7 +28,7 @@ UNIQNAME    = qifwang
 IDENTIFIER  = B99292359FFD910ED13A7E6C7F9705B8742F0D79
 
 # Change 'executable' to match the command name given in the project spec.
-EXECUTABLE  = Rescue_the_Countess
+EXECUTABLE  = superMarco
 
 # The following line looks for a project's main() in files named project*.cpp,
 # executable.cpp (substituted from EXECUTABLE above), or main.cpp
@@ -292,6 +292,7 @@ help:
 # % g++ -std=c++1z -MM *.cpp
 #
 # ADD YOUR OWN DEPENDENCIES HERE
+
 
 ######################
 # TODO (end) #
