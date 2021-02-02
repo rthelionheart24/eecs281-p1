@@ -8,15 +8,22 @@ class Search_list
 {
 
 public:
-    std::deque<Tile> container;
+    int total_tiles;
+
+    std::deque<Tile> to_be_searched;
 
     Search_list();
 
     ~Search_list();
 
-    virtual void add_tile(Tile t) const = 0;
+    virtual void add_tile(Tile t) = 0;
 
-    virtual Tile remove_tile() const = 0;
+    virtual Tile remove_tile() = 0;
+
+    bool is_empty()
+    {
+        return to_be_searched.empty();
+    }
 };
 
 class queue_Search_list : public Search_list
@@ -25,19 +32,19 @@ class queue_Search_list : public Search_list
 public:
     void add_tile(Tile t)
     {
-        container.push_back(t);
+        to_be_searched.push_back(t);
     }
 
     Tile remove_tile()
     {
-        if (!container.empty())
+        if (!to_be_searched.empty())
         {
             Tile temp;
-            temp = container.front();
-            container.pop_front();
+            temp = to_be_searched.front();
+            to_be_searched.pop_front();
             return temp;
         }
-        std::cout << "Container is empty\n";
+        std::cout << "to_be_searched; is empty\n";
     }
 };
 
@@ -47,19 +54,19 @@ class stack_Search_list : public Search_list
 public:
     void add_tile(Tile t)
     {
-        container.push_back(t);
+        to_be_searched.push_back(t);
     }
 
     Tile remove_tile()
     {
-        if (!container.empty())
+        if (!to_be_searched.empty())
         {
-            Tile temp = container.back();
-            container.pop_back();
+            Tile temp = to_be_searched.back();
+            to_be_searched.pop_back();
             return temp;
         }
 
-        std::cout << "Container is empty\n";
+        std::cout << "to_be_searched; is empty\n";
     }
 };
 

@@ -31,7 +31,7 @@ private:
 	std::vector<std::vector<std::vector<Tile>>> layout;
 
 	//Location of starting and ending positions
-	unsigned int room_start, col_start, row_start, room_end, col_end, row_end;
+	Tile starting, ending;
 
 public:
 	Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode);
@@ -44,6 +44,19 @@ public:
 
 	//Read in list-form data
 	void read_list();
+
+	Tile get_starting();
+
+	Tile get_ending();
+
+	Tile get_tile(unsigned int room, unsigned int row, unsigned int col);
+
+	unsigned int get_size_room();
+	unsigned int get_num_room();
+
+	char get_output_mode();
+
+	char get_search_mode();
 
 	bool check_legal_coord(std::string dimension, unsigned int coord);
 };
@@ -154,15 +167,11 @@ void Map::read_map()
 		//check for starting and ending point
 		if (type == 'S')
 		{
-			room_start = room;
-			col_start = col;
-			row_start = row;
+			starting = {room, col, row, type};
 		}
 		if (type == 'C')
 		{
-			room_end = room;
-			col_end = col;
-			row_end = row;
+			ending = {room, col, row, type};
 		}
 
 		//Push tile into the map
@@ -220,21 +229,51 @@ void Map::read_list()
 		//check for starting and ending point
 		if (type == 'S')
 		{
-			room_start = room;
-			col_start = col;
-			row_start = row;
+			starting = {room, col, row, type};
 		}
 		if (type == 'C')
 		{
-			room_end = room;
-			col_end = col;
-			row_end = row;
+			ending = {room, col, row, type};
 		}
 
 		//Push tile into the map
 		Tile temp = {room, col, row, type};
 		layout[room][col][row] = temp;
 	}
+}
+
+Tile Map::get_starting()
+{
+	return starting;
+}
+
+Tile Map::get_ending()
+{
+	return ending;
+}
+
+Tile get_tile(unsigned int room, unsigned int row, unsigned int col)
+{
+	return layout[room][row][col];
+}
+
+char Map::get_output_mode()
+{
+	return output_mode;
+}
+
+char Map::get_search_mode()
+{
+	return search_mode;
+}
+
+unsigned int Map::get_size_room()
+{
+	return size_room;
+}
+unsigned int Map::get_num_room()
+{
+	return num_room;
 }
 
 bool Map::check_legal_coord(std::string dimension, unsigned int coord)
