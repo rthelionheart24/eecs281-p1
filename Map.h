@@ -45,11 +45,15 @@ public:
 	//Read in list-form data
 	void read_list();
 
+	void discover(Tile t);
+
 	Tile get_starting();
 
 	Tile get_ending();
 
 	Tile get_tile(unsigned int room, unsigned int row, unsigned int col);
+
+	bool movable(char direction, unsigned int room, unsigned int row, unsigned int col);
 
 	unsigned int get_size_room();
 	unsigned int get_num_room();
@@ -252,9 +256,52 @@ Tile Map::get_ending()
 	return ending;
 }
 
-Tile get_tile(unsigned int room, unsigned int row, unsigned int col)
+Tile Map::get_tile(unsigned int room, unsigned int row, unsigned int col)
 {
 	return layout[room][row][col];
+}
+
+bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned int col)
+{
+	if (direction == 'n')
+	{
+		if (row == 0)
+			return false;
+		return layout[room][row + 1][col].type != '#' &&
+			   layout[room][row + 1][col].type != '!' &&
+			   layout[room][row + 1][col].type != 'd';
+	}
+
+	else if (direction == 's')
+	{
+		if (row == size_room)
+			return false;
+		return layout[room][row - 1][col].type != '#' &&
+			   layout[room][row - 1][col].type != '!' &&
+			   layout[room][row - 1][col].type != 'd';
+	}
+	else if (direction == 'e')
+	{
+		if (col == size_room)
+			return false;
+		return layout[room][row][col + 1].type != '#' &&
+			   layout[room][row][col + 1].type != '!' &&
+			   layout[room][row][col + 1].type != 'd';
+	}
+
+	else if (direction == 'w')
+	{
+		if (col == 0)
+			return false;
+		return layout[room][row][col - 1].type != '#' &&
+			   layout[room][row][col - 1].type != '!' &&
+			   layout[room][row][col - 1].type != 'd';
+	}
+}
+
+void Map::discover(Tile t)
+{
+	t.type = 'd';
 }
 
 char Map::get_output_mode()
@@ -273,7 +320,7 @@ unsigned int Map::get_size_room()
 }
 unsigned int Map::get_num_room()
 {
-	return num_room;
+	return num_rooms;
 }
 
 bool Map::check_legal_coord(std::string dimension, unsigned int coord)

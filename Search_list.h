@@ -12,6 +12,8 @@ public:
 
     std::deque<Tile> to_be_searched;
 
+    std::deque<Tile> searched;
+
     Search_list();
 
     ~Search_list();

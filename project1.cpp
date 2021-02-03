@@ -14,7 +14,7 @@
 
 using namespace std;
 
-bool action(Map map, Search_list *list, Tile t);
+bool stack_action(Map map, Search_list *list, Tile t);
 void get_path(Map map, Search_list *list);
 
 void output_map(Map map);
@@ -53,17 +53,23 @@ int main(int argc, char **argv)
 	current_tile = starting_tile;
 	ending_tile = map.get_ending();
 
+	bool result = false;
+
 	while (!list->is_empty())
 	{
-		//The next tile to search
-		Tile temp = list->remove_tile();
+		//1.Remove the next position
+		Tile current = list->remove_tile();
 
-		//identuify whether countess is found
-		bool result = action(map, list, temp);
+		result = stack_action(map, list, current);
 
 		if (result)
+		{
 			//TODO: backtrack the path to countess and leave the loop
-			result = false;
+			if (map.get_output_mode() == 'm')
+				output_map(map);
+			else
+				output_list(map);
+		}
 	}
 
 	cout << "No solution, " << list->total_tiles << " tiles discovered";
@@ -71,16 +77,64 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-bool action(Map map, Search_list *list, Tile t)
+bool stack_action(Map map, Search_list *list, Tile current)
 {
-	//When the next tile is C
-	if (t.type == 'C')
-		return true;
 
-	if (isdigit(t.type))
+	//2. If the position is a warp pipe
+	if (isdigit(current.type))
 	{
-		Tile temp = {static_cast<unsigned int>(t.type - '0'), t.row, t.col};
-		list->add_tile(temp);
+
+		Tile warp = map.get_tile(static_cast<unsigned int>(current.type - '0'),
+								 current.row, current.col);
+		if (warp.type == 'd' || warp.type == '#' || warp.type == '!')
+			return false;
+		if (warp.type == 'C')
+			return true;
+
+		list->add_tile(warp);
+		return false;
+	}
+
+	//3. If the position isn't a warp pipe
+	else
+	{
+		if (map.movable('n', current.room, current.row, current.col))
+		{
+			//When the next tile is C
+			if (map.get_tile(current.room, current.row + 1, current.col).type == 'C')
+				return true;
+			list->add_tile(map.get_tile(current.room, current.row + 1, current.col));
+			map.discover(map.get_tile(current.room, current.row + 1, current.col));
+		}
+
+		if (map.movable('e', current.room, current.row, current.col))
+		{
+			//When the next tile is C
+			if (current.type == 'C')
+				return true;
+			list->add_tile(map.get_tile(current.room, current.row, current.col + 1));
+			map.discover(map.get_tile(current.room, current.row, current.col + 1));
+		}
+
+		if (map.movable('s', current.room, current.row, current.col))
+		{
+			//When the next tile is C
+			if (current.type == 'C')
+				return true;
+			list->add_tile(map.get_tile(current.room, current.row - 1, current.col));
+			map.discover(map.get_tile(current.room, current.row - 1, current.col));
+		}
+
+		if (map.movable('w', current.room, current.row, current.col))
+		{
+			//When the next tile is C
+			if (current.type == 'C')
+				return true;
+			list->add_tile(map.get_tile(current.room, current.row, current.col - 1));
+			map.discover(map.get_tile(current.room, current.row, current.col - 1));
+		}
+
+		current.type == 'd';
 	}
 }
 
