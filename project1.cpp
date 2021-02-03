@@ -15,7 +15,7 @@
 using namespace std;
 
 bool stack_action(Map map, Search_list *list, Tile t);
-void get_path(Map map, Search_list *list);
+void label_path(Map map, Search_list *list);
 
 void output_map(Map map);
 void output_list(Map map);
@@ -74,6 +74,8 @@ int main(int argc, char **argv)
 
 	cout << "No solution, " << list->total_tiles << " tiles discovered";
 
+	delete list;
+
 	return 0;
 }
 
@@ -84,14 +86,16 @@ bool stack_action(Map map, Search_list *list, Tile current)
 	if (isdigit(current.type))
 	{
 
-		Tile warp = map.get_tile(static_cast<unsigned int>(current.type - '0'),
+		Tile next = map.get_tile(static_cast<unsigned int>(current.type - '0'),
 								 current.row, current.col);
-		if (warp.type == 'd' || warp.type == '#' || warp.type == '!')
+		next.previous = 'p';
+		if (next.type == 'd' || next.type == '#' || next.type == '!')
 			return false;
-		if (warp.type == 'C')
+		if (next.type == 'C')
 			return true;
 
-		list->add_tile(warp);
+		list->add_tile(next);
+		next.previous = static_cast<char>('0' + current.room);
 		return false;
 	}
 
@@ -100,46 +104,107 @@ bool stack_action(Map map, Search_list *list, Tile current)
 	{
 		if (map.movable('n', current.room, current.row, current.col))
 		{
+			Tile next = map.get_tile(current.room, current.row + 1, current.col);
+
 			//When the next tile is C
-			if (map.get_tile(current.room, current.row + 1, current.col).type == 'C')
+			if (next.type == 'C')
+			{
+				map.get_ending().previous = 's';
 				return true;
-			list->add_tile(map.get_tile(current.room, current.row + 1, current.col));
-			map.discover(map.get_tile(current.room, current.row + 1, current.col));
+			}
+
+			next.previous = 's';
+			list->add_tile(next);
+
+			map.discover(next);
 		}
 
 		if (map.movable('e', current.room, current.row, current.col))
 		{
+			Tile next = map.get_tile(current.room, current.row, current.col + 1);
 			//When the next tile is C
-			if (current.type == 'C')
+			if (next.type == 'C')
+			{
+				map.get_ending().previous = 'w';
 				return true;
-			list->add_tile(map.get_tile(current.room, current.row, current.col + 1));
-			map.discover(map.get_tile(current.room, current.row, current.col + 1));
+			}
+
+			next.previous = 'w';
+			list->add_tile(next);
+			map.discover(next);
 		}
 
 		if (map.movable('s', current.room, current.row, current.col))
 		{
+			Tile next = map.get_tile(current.room, current.row - 1, current.col);
 			//When the next tile is C
-			if (current.type == 'C')
+			if (next.type == 'C')
+			{
+				map.get_ending().previous = 'n';
 				return true;
-			list->add_tile(map.get_tile(current.room, current.row - 1, current.col));
-			map.discover(map.get_tile(current.room, current.row - 1, current.col));
+			}
+			next.previous = 'n';
+			list->add_tile(next);
+			map.discover(next);
 		}
 
 		if (map.movable('w', current.room, current.row, current.col))
 		{
+			Tile next = map.get_tile(current.room, current.row, current.col - 1);
+
 			//When the next tile is C
-			if (current.type == 'C')
+			if (next.type == 'C')
+			{
+				map.get_ending().previous = 'e';
 				return true;
-			list->add_tile(map.get_tile(current.room, current.row, current.col - 1));
-			map.discover(map.get_tile(current.room, current.row, current.col - 1));
+			}
+			next.previous = 'e';
+			list->add_tile(next);
+			map.discover(next);
 		}
 
 		current.type == 'd';
 	}
 }
 
-void get_path(Map map, Search_list *list)
+void label_path(Map map)
 {
+	Tile temp = map.get_ending();
+
+	while (temp.type != 'S')
+	{
+
+		if (temp.previous == 'n')
+		{
+			temp = map.get_tile(temp.room, temp.row + 1, temp.col);
+			temp.type = 's';
+		}
+
+		else if (temp.previous == 's')
+		{
+			temp = map.get_tile(temp.room, temp.row - 1, temp.col);
+			temp.type = 'n';
+		}
+
+		else if (temp.previous == 'e')
+		{
+			temp = map.get_tile(temp.room, temp.row, temp.col + 1);
+			temp.type = 'w';
+		}
+
+		else if (temp.previous == 'w')
+		{
+			temp = map.get_tile(temp.room, temp.row, temp.col - 1);
+			temp.type = 'e';
+		}
+
+		else
+		{
+			temp = map.get_tile(static_cast<unsigned int>(temp.previous - '0'), temp.row, temp.col);
+			temp.type = 'p';
+		}
+	}
+
 }
 
 void output_map(Map map)
@@ -167,7 +232,10 @@ void output_list(Map map)
 	Tile temp = map.get_starting();
 	while (temp.type != 'C')
 	{
-		cout << "(" << temp.room << "," << temp.row << "," << temp.col << "," << temp.type << ")\n";
+		cout << "(" << temp.room << ","
+			 << temp.row << ","
+			 << temp.col << ","
+			 << temp.type << ")\n";
 
 		if (temp.type == 'p')
 		{

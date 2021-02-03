@@ -8,6 +8,7 @@ struct Tile
     unsigned int col;
     unsigned int row;
     char type = '.';
+    char previous = 't';
 };
 
 #endif
