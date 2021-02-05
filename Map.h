@@ -1,4 +1,4 @@
-//
+//Project Identifier: B99292359FFD910ED13A7E6C7F9705B8742F0D79
 // Created by richa on 1/28/2021.
 //
 #include <iostream>
@@ -57,6 +57,8 @@ public:
 
 	Tile *get_tile(coordinates c);
 
+	void restore();
+
 	void set_prev(char prev, unsigned int room, unsigned int row, unsigned int col);
 	bool movable(char direction, unsigned int room, unsigned int row, unsigned int col);
 
@@ -74,6 +76,8 @@ Map::Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mod
 																					 size_room(in_size_room),
 																					 input_mode(in_input_mode)
 {
+	starting = nullptr;
+	ending = nullptr;
 
 	layout.resize(static_cast<unsigned int>(num_rooms));
 	for (unsigned int i = 0; i < num_rooms; i++)
@@ -248,6 +252,19 @@ void Map::read_list()
 		{
 			ending = &layout[room][row][col];
 		}
+
+		for (unsigned int room = 0; room < num_rooms; room++)
+		{
+			for (unsigned row = 0; row < size_room; row++)
+			{
+				for (unsigned col = 0; col < size_room; col++)
+				{
+					layout[room][row][col].room = room;
+					layout[room][row][col].row = row;
+					layout[room][row][col].col = col;
+				}
+			}
+		}
 	}
 }
 
@@ -285,7 +302,7 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 			return false;
 		return layout[room][row - 1][col].type != '#' &&
 			   layout[room][row - 1][col].type != '!' &&
-			   layout[room][row - 1][col].type != 'd';
+			   !layout[room][row - 1][col].discover;
 	}
 
 	else if (direction == 's')
@@ -294,7 +311,7 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 			return false;
 		return layout[room][row + 1][col].type != '#' &&
 			   layout[room][row + 1][col].type != '!' &&
-			   layout[room][row + 1][col].type != 'd';
+			   !layout[room][row + 1][col].discover;
 	}
 	else if (direction == 'e')
 	{
@@ -302,7 +319,7 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 			return false;
 		return layout[room][row][col + 1].type != '#' &&
 			   layout[room][row][col + 1].type != '!' &&
-			   layout[room][row][col + 1].type != 'd';
+			   !layout[room][row][col + 1].discover;
 	}
 
 	else
@@ -311,18 +328,18 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 			return false;
 		return layout[room][row][col - 1].type != '#' &&
 			   layout[room][row][col - 1].type != '!' &&
-			   layout[room][row][col - 1].type != 'd';
+			   !layout[room][row][col - 1].discover;
 	}
 }
 
 void Map::discover(unsigned int room, unsigned int row, unsigned int col)
 {
-	layout[room][row][col].type = 'd';
+	layout[room][row][col].discover = true;
 }
 
 void Map::discover_warp(unsigned int room, unsigned int row, unsigned int col)
 {
-	layout[room][row][col].type = 'p';
+	layout[room][row][col].discover = true;
 }
 
 char Map::get_output_mode()

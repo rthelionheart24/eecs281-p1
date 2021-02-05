@@ -1,3 +1,4 @@
+//Project Identifier: B99292359FFD910ED13A7E6C7F9705B8742F0D79
 #ifndef P1_Search_list_H
 #define P1_Search_list_H
 
@@ -9,6 +10,7 @@ class Search_list
 {
 
 public:
+    //TODO Increment this value when we search
     int total_tiles;
 
     std::deque<coordinates> to_be_searched;
@@ -29,17 +31,17 @@ class queue_Search_list : public Search_list
 {
 
 public:
-    void add_tile(coordinates c)
+    void add_tile(coordinates c) override
     {
         to_be_searched.push_back(c);
     }
-    void add_tile(Tile *t)
+    void add_tile(Tile *t) override
     {
         coordinates c = {t->room, t->row, t->col};
         to_be_searched.push_back(c);
     }
 
-    coordinates remove_tile()
+    coordinates remove_tile() override
     {
 
         coordinates temp;
@@ -53,18 +55,18 @@ class stack_Search_list : public Search_list
 {
 
 public:
-    void add_tile(coordinates c)
+    void add_tile(coordinates c) override
     {
         to_be_searched.push_back(c);
     }
 
-    void add_tile(Tile *t)
+    void add_tile(Tile *t) override
     {
         coordinates c = {t->room, t->row, t->col};
         to_be_searched.push_back(c);
     }
 
-    coordinates remove_tile()
+    coordinates remove_tile() override
     {
 
         coordinates temp = to_be_searched.back();

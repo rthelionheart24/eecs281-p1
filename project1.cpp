@@ -55,6 +55,7 @@ int main(int argc, char **argv)
 	{
 		//1.Remove the next position
 		coordinates current = list->remove_tile();
+		list->total_tiles++;
 
 		result = stack_action(map, list, current);
 
@@ -87,14 +88,15 @@ bool stack_action(Map &map, Search_list *list, coordinates current)
 	if (isdigit(current_tile->type))
 	{
 
-		Tile *next = map.get_tile(static_cast<unsigned int>(current_tile->room) - '0',
+		Tile *next = map.get_tile(current_tile->room,
 								  current_tile->row, current_tile->col);
 		if (next->type == 'd' || next->type == '#' || next->type == '!')
 			return false;
 
 		if (next->type == 'C')
 		{
-			map.set_prev(static_cast<char>('0' + current.room), next->room, next->row, next->col);
+			map.set_prev(static_cast<char>('0' + current.room),
+						 next->room, next->row, next->col);
 			return true;
 		}
 
@@ -172,8 +174,6 @@ bool stack_action(Map &map, Search_list *list, coordinates current)
 			list->add_tile(next);
 			map.discover(next->room, next->row, next->col);
 		}
-
-		current_tile->type = 'd';
 	}
 
 	return false;
