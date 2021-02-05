@@ -31,7 +31,7 @@ private:
 	std::vector<std::vector<std::vector<Tile>>> layout;
 
 	//Location of starting and ending positions
-	Tile starting, ending;
+	Tile *starting, *ending;
 
 public:
 	Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode);
@@ -45,14 +45,19 @@ public:
 	//Read in list-form data
 	void read_list();
 
-	void discover(Tile t);
+	void discover(unsigned int room, unsigned int row, unsigned int col);
 
-	Tile get_starting();
+	void discover_warp(unsigned int room, unsigned int row, unsigned int col);
 
-	Tile get_ending();
+	Tile *get_starting() const;
 
-	Tile get_tile(unsigned int room, unsigned int row, unsigned int col);
+	Tile *get_ending() const;
 
+	Tile *get_tile(unsigned int room, unsigned int row, unsigned int col);
+
+	Tile *get_tile(coordinates c);
+
+	void set_prev(char prev, unsigned int room, unsigned int row, unsigned int col);
 	bool movable(char direction, unsigned int room, unsigned int row, unsigned int col);
 
 	unsigned int get_size_room();
@@ -168,19 +173,19 @@ void Map::read_map()
 			exit(1);
 		}
 
+		//Push tile into the map
+		Tile temp = {room, row, col, type};
+		layout[room][row][col] = temp;
+
 		//check for starting and ending point
 		if (type == 'S')
 		{
-			starting = {room, col, row, type};
+			starting = &layout[room][row][col];
 		}
 		if (type == 'C')
 		{
-			ending = {room, col, row, type};
+			ending = &layout[room][row][col];
 		}
-
-		//Push tile into the map
-		Tile temp = {room, col, row, type};
-		layout[room][row][col] = temp;
 
 		col++;
 
@@ -230,35 +235,46 @@ void Map::read_list()
 			exit(1);
 		}
 
+		//Push tile into the map
+		Tile temp = {room, row, col, type};
+		layout[room][row][col] = temp;
+
 		//check for starting and ending point
 		if (type == 'S')
 		{
-			starting = {room, col, row, type};
+			starting = &layout[room][row][col];
 		}
 		if (type == 'C')
 		{
-			ending = {room, col, row, type};
+			ending = &layout[room][row][col];
 		}
-
-		//Push tile into the map
-		Tile temp = {room, col, row, type};
-		layout[room][col][row] = temp;
 	}
 }
 
-Tile Map::get_starting()
+Tile *Map::get_starting() const
 {
+
 	return starting;
 }
 
-Tile Map::get_ending()
+Tile *Map::get_ending() const
 {
 	return ending;
 }
 
-Tile Map::get_tile(unsigned int room, unsigned int row, unsigned int col)
+Tile *Map::get_tile(unsigned int room, unsigned int row, unsigned int col)
 {
-	return layout[room][row][col];
+	return &layout[room][row][col];
+}
+
+Tile *Map::get_tile(coordinates c)
+{
+	return &layout[c.room][c.row][c.col];
+}
+
+void Map::set_prev(char prev, unsigned int room, unsigned int row, unsigned int col)
+{
+	layout[room][row][col].previous = prev;
 }
 
 bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned int col)
@@ -267,29 +283,29 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 	{
 		if (row == 0)
 			return false;
-		return layout[room][row + 1][col].type != '#' &&
-			   layout[room][row + 1][col].type != '!' &&
-			   layout[room][row + 1][col].type != 'd';
-	}
-
-	else if (direction == 's')
-	{
-		if (row == size_room)
-			return false;
 		return layout[room][row - 1][col].type != '#' &&
 			   layout[room][row - 1][col].type != '!' &&
 			   layout[room][row - 1][col].type != 'd';
 	}
+
+	else if (direction == 's')
+	{
+		if (row == size_room - 1)
+			return false;
+		return layout[room][row + 1][col].type != '#' &&
+			   layout[room][row + 1][col].type != '!' &&
+			   layout[room][row + 1][col].type != 'd';
+	}
 	else if (direction == 'e')
 	{
-		if (col == size_room)
+		if (col == size_room - 1)
 			return false;
 		return layout[room][row][col + 1].type != '#' &&
 			   layout[room][row][col + 1].type != '!' &&
 			   layout[room][row][col + 1].type != 'd';
 	}
 
-	else if (direction == 'w')
+	else
 	{
 		if (col == 0)
 			return false;
@@ -299,9 +315,14 @@ bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned 
 	}
 }
 
-void Map::discover(Tile t)
+void Map::discover(unsigned int room, unsigned int row, unsigned int col)
 {
-	t.type = 'd';
+	layout[room][row][col].type = 'd';
+}
+
+void Map::discover_warp(unsigned int room, unsigned int row, unsigned int col)
+{
+	layout[room][row][col].type = 'p';
 }
 
 char Map::get_output_mode()

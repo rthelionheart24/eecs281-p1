@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/superMarco_debug",
-            "args": ["--stack", "<", "spec-L.txt"],
+            "args": ["--stack", "<", "spec-M.txt", ">","spec-M-out.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

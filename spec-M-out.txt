@@ -1,0 +1,11 @@
+Start in room 0, row 2, column 3
+//castle room 0
+eC..
+nddd
+nwww
+#dd#
+//castle room 1
+....
+#...
+.!..
+#...

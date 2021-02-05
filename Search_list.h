@@ -3,6 +3,7 @@
 
 #include <deque>
 #include "Map.h"
+#include "Tile.h"
 
 class Search_list
 {
@@ -10,15 +11,13 @@ class Search_list
 public:
     int total_tiles;
 
-    std::deque<Tile> to_be_searched;
+    std::deque<coordinates> to_be_searched;
 
-    Search_list();
+    virtual void add_tile(coordinates c) = 0;
 
-    ~Search_list();
+    virtual void add_tile(Tile *t) = 0;
 
-    virtual void add_tile(Tile t) = 0;
-
-    virtual Tile remove_tile() = 0;
+    virtual coordinates remove_tile() = 0;
 
     bool is_empty()
     {
@@ -30,21 +29,23 @@ class queue_Search_list : public Search_list
 {
 
 public:
-    void add_tile(Tile t)
+    void add_tile(coordinates c)
     {
-        to_be_searched.push_back(t);
+        to_be_searched.push_back(c);
+    }
+    void add_tile(Tile *t)
+    {
+        coordinates c = {t->room, t->row, t->col};
+        to_be_searched.push_back(c);
     }
 
-    Tile remove_tile()
+    coordinates remove_tile()
     {
-        if (!to_be_searched.empty())
-        {
-            Tile temp;
-            temp = to_be_searched.front();
-            to_be_searched.pop_front();
-            return temp;
-        }
-        std::cout << "to_be_searched; is empty\n";
+
+        coordinates temp;
+        temp = to_be_searched.front();
+        to_be_searched.pop_front();
+        return temp;
     }
 };
 
@@ -52,21 +53,23 @@ class stack_Search_list : public Search_list
 {
 
 public:
-    void add_tile(Tile t)
+    void add_tile(coordinates c)
     {
-        to_be_searched.push_back(t);
+        to_be_searched.push_back(c);
     }
 
-    Tile remove_tile()
+    void add_tile(Tile *t)
     {
-        if (!to_be_searched.empty())
-        {
-            Tile temp = to_be_searched.back();
-            to_be_searched.pop_back();
-            return temp;
-        }
+        coordinates c = {t->room, t->row, t->col};
+        to_be_searched.push_back(c);
+    }
 
-        std::cout << "to_be_searched; is empty\n";
+    coordinates remove_tile()
+    {
+
+        coordinates temp = to_be_searched.back();
+        to_be_searched.pop_back();
+        return temp;
     }
 };
 

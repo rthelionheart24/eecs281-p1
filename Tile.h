@@ -5,10 +5,16 @@ struct Tile
 {
 
     unsigned int room;
-    unsigned int col;
     unsigned int row;
+    unsigned int col;
+
     char type = '.';
     char previous = 't';
+};
+
+struct coordinates
+{
+    unsigned int room, row, col;
 };
 
 #endif
