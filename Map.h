@@ -34,7 +34,9 @@ private:
 	Tile *starting, *ending;
 
 public:
-	Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode);
+	Map(unsigned int in_num_rooms,
+		unsigned int in_size_room,
+		char in_input_mode);
 
 	//Get options from the command line to initialize parameters
 	void get_options(int argc, char **argv);
@@ -45,22 +47,30 @@ public:
 	//Read in list-form data
 	void read_list();
 
-	void discover(unsigned int room, unsigned int row, unsigned int col);
+	void discover(unsigned int room,
+				  unsigned int row,
+				  unsigned int col);
 
-	void discover_warp(unsigned int room, unsigned int row, unsigned int col);
+	void discover_warp(unsigned int room,
+					   unsigned int row,
+					   unsigned int col);
 
 	Tile *get_starting() const;
 
 	Tile *get_ending() const;
 
-	Tile *get_tile(unsigned int room, unsigned int row, unsigned int col);
+	Tile *get_tile(unsigned int room,
+				   unsigned int row,
+				   unsigned int col);
 
 	Tile *get_tile(coordinates c);
 
 	void restore();
 
-	void set_prev(char prev, unsigned int room, unsigned int row, unsigned int col);
-	bool movable(char direction, unsigned int room, unsigned int row, unsigned int col);
+	void set_prev(char prev, unsigned int room,
+				  unsigned int row, unsigned int col);
+	bool movable(char direction, unsigned int room,
+				 unsigned int row, unsigned int col);
 
 	unsigned int get_size_room();
 	unsigned int get_num_room();
@@ -72,9 +82,11 @@ public:
 	bool check_legal_coord(std::string dimension, unsigned int coord);
 };
 
-Map::Map(unsigned int in_num_rooms, unsigned int in_size_room, char in_input_mode) : num_rooms(in_num_rooms),
-																					 size_room(in_size_room),
-																					 input_mode(in_input_mode)
+Map::Map(unsigned int in_num_rooms,
+		 unsigned int in_size_room,
+		 char in_input_mode) : num_rooms(in_num_rooms),
+							   size_room(in_size_room),
+							   input_mode(in_input_mode)
 {
 	starting = nullptr;
 	ending = nullptr;
@@ -289,12 +301,14 @@ Tile *Map::get_tile(coordinates c)
 	return &layout[c.room][c.row][c.col];
 }
 
-void Map::set_prev(char prev, unsigned int room, unsigned int row, unsigned int col)
+void Map::set_prev(char prev, unsigned int room,
+				   unsigned int row, unsigned int col)
 {
 	layout[room][row][col].previous = prev;
 }
 
-bool Map::movable(char direction, unsigned int room, unsigned int row, unsigned int col)
+bool Map::movable(char direction, unsigned int room,
+				  unsigned int row, unsigned int col)
 {
 	if (direction == 'n')
 	{

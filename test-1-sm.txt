@@ -1,0 +1,14 @@
+M
+2
+4
+//Normal case, when we need to use warp pipe to reach C
+//castle room 0
+..S.
+.!..
+...1
+.#..
+//castle room 1
+....
+.C..
+..#.
+...!

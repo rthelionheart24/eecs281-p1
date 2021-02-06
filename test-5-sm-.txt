@@ -1,0 +1,13 @@
+M
+3
+2
+//Warp right onto C
+//castle room 0
+C.
+..
+//castle room 1
+0.
+..
+//castle room 2
+S1
+..

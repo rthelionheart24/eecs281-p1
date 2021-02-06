@@ -102,7 +102,8 @@ bool stack_action(Map &map, Search_list *list, coordinates current)
 
 		list->add_tile(next);
 
-		map.set_prev(static_cast<char>('0' + current.room), next->room, next->row, next->col);
+		map.set_prev(static_cast<char>('0' + current.room),
+					 next->room, next->row, next->col);
 		map.discover_warp(current.room, current.row, current.col);
 		return false;
 	}
@@ -188,31 +189,36 @@ void label_path(Map &map)
 
 		if (temp->previous == 'n')
 		{
-			temp = map.get_tile(temp->room, static_cast<unsigned int>(temp->row - 1), temp->col);
+			temp = map.get_tile(temp->room,
+								static_cast<unsigned int>(temp->row - 1), temp->col);
 			temp->type = 's';
 		}
 
 		else if (temp->previous == 's')
 		{
-			temp = map.get_tile(temp->room, static_cast<unsigned int>(temp->row + 1), temp->col);
+			temp = map.get_tile(temp->room,
+								static_cast<unsigned int>(temp->row + 1), temp->col);
 			temp->type = 'n';
 		}
 
 		else if (temp->previous == 'e')
 		{
-			temp = map.get_tile(temp->room, temp->row, static_cast<unsigned int>(temp->col + 1));
+			temp = map.get_tile(temp->room, temp->row,
+								static_cast<unsigned int>(temp->col + 1));
 			temp->type = 'w';
 		}
 
 		else if (temp->previous == 'w')
 		{
-			temp = map.get_tile(temp->room, temp->row, static_cast<unsigned int>(temp->col - 1));
+			temp = map.get_tile(temp->room, temp->row,
+								static_cast<unsigned int>(temp->col - 1));
 			temp->type = 'e';
 		}
 
 		else
 		{
-			temp = map.get_tile(static_cast<unsigned int>(temp->previous - '0'), temp->row, temp->col);
+			temp = map.get_tile(static_cast<unsigned int>(temp->previous - '0'),
+								temp->row, temp->col);
 			temp->type = 'p';
 		}
 	}

@@ -1,0 +1,12 @@
+M
+2
+3
+//When there is no solution at all
+//castle room 0
+.!C
+..!
+...
+//castle room 1
+...
+...
+1.S
