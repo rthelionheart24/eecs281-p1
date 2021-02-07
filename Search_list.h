@@ -12,18 +12,13 @@ class Search_list
 public:
     int total_tiles;
 
-    std::deque<coordinates> to_be_searched;
+    std::deque<Tile *> to_be_searched;
 
-    virtual void add_tile(coordinates c) = 0;
+    virtual void add_tile(Tile *t) { to_be_searched.push_back(t); }
 
-    virtual void add_tile(Tile *t) = 0;
+    virtual Tile *remove_tile() = 0;
 
-    virtual coordinates remove_tile() = 0;
-
-    bool is_empty()
-    {
-        return to_be_searched.empty();
-    }
+    bool is_empty() { return to_be_searched.empty(); }
 
     virtual ~Search_list() {}
 };
@@ -32,49 +27,19 @@ class queue_Search_list : public Search_list
 {
 
 public:
-    void add_tile(coordinates c) override
-    {
-        to_be_searched.push_back(c);
-    }
-    void add_tile(Tile *t) override
-    {
-        coordinates c = {t->room, t->row, t->col};
-        to_be_searched.push_back(c);
-    }
+    // void add_tile(Tile *t) override { to_be_searched.push_back(*t); }
 
-    coordinates remove_tile() override
-    {
-
-        coordinates temp;
-        temp = to_be_searched.front();
-        to_be_searched.pop_front();
-        return temp;
-    }
-    ~queue_Search_list() {}
+    Tile *remove_tile() override;
 };
 
 class stack_Search_list : public Search_list
 {
 
 public:
-    void add_tile(coordinates c) override
-    {
-        to_be_searched.push_back(c);
-    }
+    // void add_tile(Tile *t) override { to_be_searched.push_back({t->room, t->row, t->col}); }
 
-    void add_tile(Tile *t) override
-    {
-        coordinates c = {t->room, t->row, t->col};
-        to_be_searched.push_back(c);
-    }
+    Tile *remove_tile() override;
 
-    coordinates remove_tile() override
-    {
-
-        coordinates temp = to_be_searched.back();
-        to_be_searched.pop_back();
-        return temp;
-    }
     ~stack_Search_list() {}
 };
 

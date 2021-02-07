@@ -14,7 +14,7 @@
 
 using namespace std;
 
-bool action(Map &map, Search_list *list, coordinates current);
+bool action(Map &map, Search_list *list, Tile *current);
 void label_path(Map &map);
 
 void output_map(Map &map);
@@ -60,8 +60,7 @@ int main(int argc, char **argv)
 	while (!list->is_empty())
 	{
 		//1.Remove the next position
-		coordinates current = list->remove_tile();
-		list->total_tiles++;
+		Tile *current = list->remove_tile();
 
 		result = action(map, list, current);
 
@@ -88,51 +87,49 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-bool action(Map &map, Search_list *list, coordinates current)
+bool action(Map &map, Search_list *list, Tile *current)
 {
-	Tile *current_tile = map.get_tile(current);
-
-	//cout << current_tile->room << " " << current_tile->row << " " << current_tile->col << endl;
+	//Tile *current_tile = map.get_tile(current);
 
 	//2. If the position is a warp pipe
-	if (isdigit(current_tile->type))
+	if (isdigit(current->type))
 	{
 		//When the room doesn't exist
-		if (static_cast<unsigned int>(current_tile->type - '0') >= map.get_num_room())
+		if (static_cast<unsigned int>(current->type - '0') >= map.get_num_room())
 			return false;
 
-		Tile *next = map.get_tile(static_cast<unsigned int>(current_tile->type - '0'),
-								  current_tile->row, current_tile->col);
+		Tile *next = map.get_tile(static_cast<unsigned int>(current->type - '0'),
+								  current->row, current->col);
 
 		//When the warp pipe leads to itself
-		if (next == current_tile)
-			return false;
+		// if (next == current_tile)
+		// 	return false;
 
 		//Check whether we can use the warp pipe
-		if (!map.movable('p', current.room, current.row, current.col))
+		if (!map.movable('p', current->room, current->row, current->col))
 			return false;
 
 		if (next->type == 'C')
 		{
-			map.set_prev(static_cast<char>('0' + current.room),
+			map.set_prev(static_cast<char>('0' + current->room),
 						 next->room, next->row, next->col);
 			return true;
 		}
 
 		list->add_tile(next);
 
-		map.set_prev(static_cast<char>('0' + current.room),
+		map.set_prev(static_cast<char>('0' + current->room),
 					 next->room, next->row, next->col);
-		map.discover_warp(next->room, next->row, next->col);
+		map.discover(next->room, next->row, next->col);
 		return false;
 	}
 
 	//3. If the position isn't a warp pipe
 	else
 	{
-		if (map.movable('n', current.room, current.row, current.col))
+		if (map.movable('n', current->room, current->row, current->col))
 		{
-			Tile *next = map.get_tile(current.room, current.row - 1, current.col);
+			Tile *next = map.get_tile(current->room, current->row - 1, current->col);
 
 			map.set_prev('s', next->room, next->row, next->col);
 
@@ -147,9 +144,9 @@ bool action(Map &map, Search_list *list, coordinates current)
 			map.discover(next->room, next->row, next->col);
 		}
 
-		if (map.movable('e', current.room, current.row, current.col))
+		if (map.movable('e', current->room, current->row, current->col))
 		{
-			Tile *next = map.get_tile(current.room, current.row, current.col + 1);
+			Tile *next = map.get_tile(current->room, current->row, current->col + 1);
 
 			map.set_prev('w', next->room, next->row, next->col);
 
@@ -163,9 +160,9 @@ bool action(Map &map, Search_list *list, coordinates current)
 			map.discover(next->room, next->row, next->col);
 		}
 
-		if (map.movable('s', current.room, current.row, current.col))
+		if (map.movable('s', current->room, current->row, current->col))
 		{
-			Tile *next = map.get_tile(current.room, current.row + 1, current.col);
+			Tile *next = map.get_tile(current->room, current->row + 1, current->col);
 
 			map.set_prev('n', next->room, next->row, next->col);
 
@@ -179,9 +176,9 @@ bool action(Map &map, Search_list *list, coordinates current)
 			map.discover(next->room, next->row, next->col);
 		}
 
-		if (map.movable('w', current.room, current.row, current.col))
+		if (map.movable('w', current->room, current->row, current->col))
 		{
-			Tile *next = map.get_tile(current.room, current.row, current.col - 1);
+			Tile *next = map.get_tile(current->room, current->row, current->col - 1);
 
 			map.set_prev('e', next->room, next->row, next->col);
 
