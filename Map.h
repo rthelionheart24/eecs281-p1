@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <getopt.h>
+#include <iomanip>
 #include "Tile.h"
 
 #ifndef P1_MAP_H
@@ -34,12 +35,12 @@ private:
 	Tile *starting, *ending;
 
 public:
-	Map(unsigned int in_num_rooms,
-		unsigned int in_size_room,
-		char in_input_mode);
+	void initialize(unsigned int in_num_rooms,
+					unsigned int in_size_room,
+					char in_input_mode);
 
 	//Get options from the command line to initialize parameters
-	void get_options(int argc, char **argv);
+	int get_options(int argc, char **argv);
 
 	//Read in map-form data
 	void read_map();
@@ -82,14 +83,13 @@ public:
 	bool check_legal_coord(std::string dimension, unsigned int coord);
 };
 
-Map::Map(unsigned int in_num_rooms,
-		 unsigned int in_size_room,
-		 char in_input_mode) : num_rooms(in_num_rooms),
-							   size_room(in_size_room),
-							   input_mode(in_input_mode)
+void Map::initialize(unsigned int in_num_rooms,
+					 unsigned int in_size_room,
+					 char in_input_mode)
 {
-	starting = nullptr;
-	ending = nullptr;
+	num_rooms = in_num_rooms;
+	size_room = in_size_room;
+	input_mode = in_input_mode;
 
 	layout.resize(static_cast<unsigned int>(num_rooms));
 	for (unsigned int i = 0; i < num_rooms; i++)
@@ -101,22 +101,23 @@ Map::Map(unsigned int in_num_rooms,
 		}
 	}
 }
-
-void Map::get_options(int argc, char **argv)
+int Map::get_options(int argc, char *argv[])
 {
+	int err = 0;
 
-	int option;
+	int choice;
 	int option_index = 0;
 
-	struct option longOpts[] = {
+	option long_options[] = {
 		{"output", required_argument, nullptr, 'o'},
 		{"stack", no_argument, nullptr, 's'},
 		{"queue", no_argument, nullptr, 'q'},
-		{"help", no_argument, nullptr, 'h'}};
+		{"help", no_argument, nullptr, 'h'},
+		{nullptr, 0, nullptr, '\0'}};
 
-	while ((option = getopt_long(argc, argv, "o:", longOpts, &option_index)) != -1)
+	while ((choice = getopt_long(argc, argv, "o:sqh", long_options, &option_index)) != -1)
 	{
-		switch (option)
+		switch (choice)
 		{
 		case 'h':
 			std::cout
@@ -131,8 +132,9 @@ void Map::get_options(int argc, char **argv)
 		case 's':
 			if (search_mode == 's' || search_mode == 'q')
 			{
-				std::cout << "More than one -s or -q\n";
-				exit(1);
+				std::cerr << "Stack or queue can only be specified once\n";
+				err = 1;
+				return err;
 			}
 			search_mode = 's';
 			break;
@@ -140,30 +142,41 @@ void Map::get_options(int argc, char **argv)
 		case 'q':
 			if (search_mode == 's' || search_mode == 'q')
 			{
-				std::cout << "More than one -s or -q\n";
-				exit(1);
+				std::cerr << "Stack or queue can only be specified once\n";
+				err = 1;
+				return err;
 			}
 			search_mode = 'q';
 			break;
 
 		case 'o':
-			if (output_mode == 'L' && output_mode == 'M')
+			if (output_mode == 'L' || output_mode == 'M')
 			{
-				std::cout << "More than one -o arg\n";
-				exit(1);
+				std::cerr << "More than one -o arg\n";
+				err = 1;
+				return err;
 			}
 			output_mode = *optarg;
+			break;
+
+		default:
+			std::cerr << "Unknown command line option\n";
+			err = 1;
+			return err;
 			break;
 		}
 	}
 	if (search_mode == 'u')
 	{
-		std::cerr << "No search mode is chosen, exiting\n";
-		exit(1);
+		std::cerr << "Stack or queue must be specified\n";
+		err = 1;
+		return err;
 	}
 
 	if (output_mode == 'u')
 		output_mode = 'M';
+
+	return err;
 }
 
 void Map::read_map()
@@ -185,7 +198,7 @@ void Map::read_map()
 		//Check for illegal entries
 		if (!check_legal_type(type))
 		{
-			std::cerr << "Illegal entry\n";
+			std::cerr << "Unknown map character\n";
 			exit(1);
 		}
 
@@ -239,15 +252,24 @@ void Map::read_list()
 		//Check for illegal entries
 		if (!check_legal_type(type))
 		{
-			std::cerr << "Illegal entry\n";
+			std::cerr << "Unknown map character\n";
 			exit(1);
 		}
 
 		//Check for illegal coordinates
-		if (!check_legal_coord("room", room) || !check_legal_coord("col", col) ||
-			!check_legal_coord("row", row))
+		if (!check_legal_coord("room", room))
 		{
-			std::cerr << "Illegal coordinates\n";
+			std::cerr << "Invalid room number\n";
+			exit(1);
+		}
+		if (!check_legal_coord("row", row))
+		{
+			std::cerr << "Invalid row number\n";
+			exit(1);
+		}
+		if (!check_legal_coord("col", col))
+		{
+			std::cerr << "Invalid column number\n";
 			exit(1);
 		}
 
@@ -267,9 +289,9 @@ void Map::read_list()
 
 		for (unsigned int room = 0; room < num_rooms; room++)
 		{
-			for (unsigned row = 0; row < size_room; row++)
+			for (unsigned int row = 0; row < size_room; row++)
 			{
-				for (unsigned col = 0; col < size_room; col++)
+				for (unsigned int col = 0; col < size_room; col++)
 				{
 					layout[room][row][col].room = room;
 					layout[room][row][col].row = row;

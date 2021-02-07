@@ -10,7 +10,6 @@ class Search_list
 {
 
 public:
-    //TODO Increment this value when we search
     int total_tiles;
 
     std::deque<coordinates> to_be_searched;
@@ -25,6 +24,8 @@ public:
     {
         return to_be_searched.empty();
     }
+
+    virtual ~Search_list() {}
 };
 
 class queue_Search_list : public Search_list
@@ -49,6 +50,7 @@ public:
         to_be_searched.pop_front();
         return temp;
     }
+    ~queue_Search_list() {}
 };
 
 class stack_Search_list : public Search_list
@@ -73,6 +75,7 @@ public:
         to_be_searched.pop_back();
         return temp;
     }
+    ~stack_Search_list() {}
 };
 
 #endif //P1_Search_list_H

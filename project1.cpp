@@ -14,7 +14,7 @@
 
 using namespace std;
 
-bool stack_action(Map &map, Search_list *list, coordinates current);
+bool action(Map &map, Search_list *list, coordinates current);
 void label_path(Map &map);
 
 void output_map(Map &map);
@@ -27,11 +27,14 @@ int main(int argc, char **argv)
 	unsigned int num_rooms, size_room;
 	char input_mode;
 
+	Map map;
+
+	int err = map.get_options(argc, argv);
+	if (err == 1)
+		exit(1);
+
 	cin >> input_mode >> num_rooms >> size_room;
-
-	Map map(num_rooms, size_room, input_mode);
-
-	map.get_options(argc, argv);
+	map.initialize(num_rooms, size_room, input_mode);
 
 	//Confirm input mode
 	if (input_mode == 'M')
@@ -46,8 +49,11 @@ int main(int argc, char **argv)
 	else
 		list = new queue_Search_list();
 
+	Tile *starting = map.get_starting();
+
 	//Add the starting position to search list
-	list->add_tile(map.get_starting());
+	list->add_tile(starting);
+	map.discover(starting->room, starting->row, starting->col);
 
 	bool result = false;
 
@@ -57,7 +63,7 @@ int main(int argc, char **argv)
 		coordinates current = list->remove_tile();
 		list->total_tiles++;
 
-		result = stack_action(map, list, current);
+		result = action(map, list, current);
 
 		if (result == true)
 		{
@@ -76,19 +82,23 @@ int main(int argc, char **argv)
 	}
 	if (result == false)
 		cout << "No solution, " << list->total_tiles << " tiles discovered";
+	delete list;
 
 	return 0;
 }
 
-bool stack_action(Map &map, Search_list *list, coordinates current)
+bool action(Map &map, Search_list *list, coordinates current)
 {
 	Tile *current_tile = map.get_tile(current);
 
 	//2. If the position is a warp pipe
 	if (isdigit(current_tile->type))
 	{
+		//When the room doesn't exist
+		if (static_cast<unsigned int>(current_tile->type - '0') >= map.get_num_room())
+			return false;
 
-		Tile *next = map.get_tile(current_tile->room,
+		Tile *next = map.get_tile(static_cast<unsigned int>(current_tile->type - '0'),
 								  current_tile->row, current_tile->col);
 		if (next->type == 'd' || next->type == '#' || next->type == '!')
 			return false;
@@ -104,7 +114,7 @@ bool stack_action(Map &map, Search_list *list, coordinates current)
 
 		map.set_prev(static_cast<char>('0' + current.room),
 					 next->room, next->row, next->col);
-		map.discover_warp(current.room, current.row, current.col);
+		map.discover_warp(next->room, next->row, next->col);
 		return false;
 	}
 
@@ -219,7 +229,7 @@ void label_path(Map &map)
 		{
 			temp = map.get_tile(static_cast<unsigned int>(temp->previous - '0'),
 								temp->row, temp->col);
-			temp->type = 'p';
+			//temp->type = 'p';
 		}
 	}
 }
@@ -230,13 +240,36 @@ void output_map(Map &map)
 		 << ", row " << map.get_starting()->row
 		 << ", column " << map.get_starting()->col << "\n";
 
+	Tile *temp = map.get_starting();
+	while (temp->type != 'C')
+	{
+
+		if (temp->type == 'n')
+			temp = map.get_tile(temp->room, temp->row - 1, temp->col);
+		else if (temp->type == 's')
+			temp = map.get_tile(temp->room, temp->row + 1, temp->col);
+		else if (temp->type == 'w')
+			temp = map.get_tile(temp->room, temp->row, temp->col - 1);
+		else if (temp->type == 'e')
+			temp = map.get_tile(temp->room, temp->row, temp->col + 1);
+		else
+		{
+			Tile *warp = temp;
+			temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'), temp->row, temp->col);
+			warp->type = 'p';
+		}
+	}
+
 	for (unsigned int room = 0; room < map.get_num_room(); room++)
 	{
 		cout << "//castle room " << room << "\n";
 		for (unsigned int row = 0; row < map.get_size_room(); row++)
 		{
 			for (unsigned int col = 0; col < map.get_size_room(); col++)
-				cout << map.get_tile(room, row, col)->type;
+			{
+				Tile *t = map.get_tile(room, row, col);
+				cout << t->type;
+			}
 			cout << "\n";
 		}
 	}
@@ -249,17 +282,20 @@ void output_list(Map &map)
 	Tile *temp = map.get_starting();
 	while (temp->type != 'C')
 	{
-		cout << "(" << temp->room << ","
-			 << temp->row << ","
-			 << temp->col << ","
-			 << temp->type << ")\n";
-
-		if (temp->type == 'p')
+		if (isdigit(temp->type))
 		{
-			temp = map.get_tile(temp->room, temp->row, temp->col);
-			continue;
+			cout << "(" << temp->room << ","
+				 << temp->row << ","
+				 << temp->col << ","
+				 << 'p' << ")\n";
 		}
-
+		else
+		{
+			cout << "(" << temp->room << ","
+				 << temp->row << ","
+				 << temp->col << ","
+				 << temp->type << ")\n";
+		}
 		if (temp->type == 'n')
 			temp = map.get_tile(temp->room, temp->row - 1, temp->col);
 		else if (temp->type == 's')
@@ -268,5 +304,7 @@ void output_list(Map &map)
 			temp = map.get_tile(temp->room, temp->row, temp->col - 1);
 		else if (temp->type == 'e')
 			temp = map.get_tile(temp->room, temp->row, temp->col + 1);
+		else
+			temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'), temp->row, temp->col);
 	}
 }
