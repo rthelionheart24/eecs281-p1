@@ -357,13 +357,21 @@ bool Map::movable(char direction, unsigned int room,
 			   !layout[room][row][col + 1].discover;
 	}
 
-	else
+	else if (direction == 'w')
 	{
 		if (col == 0)
 			return false;
 		return layout[room][row][col - 1].type != '#' &&
 			   layout[room][row][col - 1].type != '!' &&
 			   !layout[room][row][col - 1].discover;
+	}
+	else
+	{
+		Tile *warp = &layout[static_cast<unsigned int>(layout[room][row][col].type - '0')][row][col];
+
+		return warp->type != '#' &&
+			   warp->type != '!' &&
+			   !warp->discover;
 	}
 }
 

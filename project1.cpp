@@ -92,6 +92,8 @@ bool action(Map &map, Search_list *list, coordinates current)
 {
 	Tile *current_tile = map.get_tile(current);
 
+	//cout << current_tile->room << " " << current_tile->row << " " << current_tile->col << endl;
+
 	//2. If the position is a warp pipe
 	if (isdigit(current_tile->type))
 	{
@@ -101,7 +103,13 @@ bool action(Map &map, Search_list *list, coordinates current)
 
 		Tile *next = map.get_tile(static_cast<unsigned int>(current_tile->type - '0'),
 								  current_tile->row, current_tile->col);
-		if (next->type == 'd' || next->type == '#' || next->type == '!')
+
+		//When the warp pipe leads to itself
+		if (next == current_tile)
+			return false;
+
+		//Check whether we can use the warp pipe
+		if (!map.movable('p', current.room, current.row, current.col))
 			return false;
 
 		if (next->type == 'C')
