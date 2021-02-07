@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <getopt.h>
-#include <iomanip>
 #include "Tile.h"
 
 #ifndef P1_MAP_H

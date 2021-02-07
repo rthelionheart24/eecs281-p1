@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/superMarco_debug",
-            "args": ["-s", "-o", "L" , "<" , "spec-pipe-M.txt", ">", "spec-pipe-sl-actual.txt"],
+            "args": ["-s", "-o", "M" , "<" , "spec-no-solution.txt", ">", "spec-no-solution-actual.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

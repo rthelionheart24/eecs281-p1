@@ -81,7 +81,8 @@ int main(int argc, char **argv)
 		}
 	}
 	if (result == false)
-		cout << "No solution, " << list->total_tiles << " tiles discovered";
+		cout << "No solution, " << list->total_tiles << " tiles discovered.";
+
 	delete list;
 
 	return 0;
