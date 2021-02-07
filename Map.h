@@ -285,17 +285,16 @@ void Map::read_list()
 		{
 			ending = &layout[room][row][col];
 		}
-
-		for (unsigned int room = 0; room < num_rooms; room++)
+	}
+	for (unsigned int room = 0; room < num_rooms; room++)
+	{
+		for (unsigned int row = 0; row < size_room; row++)
 		{
-			for (unsigned int row = 0; row < size_room; row++)
+			for (unsigned int col = 0; col < size_room; col++)
 			{
-				for (unsigned int col = 0; col < size_room; col++)
-				{
-					layout[room][row][col].room = room;
-					layout[room][row][col].row = row;
-					layout[room][row][col].col = col;
-				}
+				layout[room][row][col].room = room;
+				layout[room][row][col].row = row;
+				layout[room][row][col].col = col;
 			}
 		}
 	}
