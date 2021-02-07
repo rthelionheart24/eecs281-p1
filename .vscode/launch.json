@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/superMarco_debug",
-            "args": ["-q", "-o", "M" , "<" , "Sample-Big-M.txt", ">", "Sample-Big-qm-actual.txt"],
+            "args": ["-q", "-o", "M" , "<" , "Sample-Big-L.txt", ">", "Sample-Big-qm-actual.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
