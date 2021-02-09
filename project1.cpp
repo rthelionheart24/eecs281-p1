@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	while (!list->is_empty())
 	{
 		//1.Remove the next position
-		Tile *current = list->remove_tile();
+		Tile *current = map.get_tile(list->remove_tile());
 
 		result = action(map, list, current);
 
@@ -261,7 +261,8 @@ void output_map(Map &map)
 		else
 		{
 			Tile *warp = temp;
-			temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'), temp->row, temp->col);
+			temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'),
+								temp->row, temp->col);
 			warp->type = 'p';
 		}
 	}

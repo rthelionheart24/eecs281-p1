@@ -57,6 +57,8 @@ public:
 				   unsigned int row,
 				   unsigned int col) { return &layout[room][row][col]; }
 
+	Tile *get_tile(Coordinates c) { return &layout[c.room][c.row][c.col]; }
+
 	void set_prev(char prev, unsigned int room,
 				  unsigned int row, unsigned int col) { layout[room][row][col].previous = prev; }
 

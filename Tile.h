@@ -2,6 +2,13 @@
 #ifndef P1_TILE_H
 #define P1_TILE_H
 
+struct Coordinates
+{
+    unsigned int room;
+    unsigned int row;
+    unsigned int col;
+};
+
 struct Tile
 {
 

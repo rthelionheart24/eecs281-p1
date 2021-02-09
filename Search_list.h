@@ -12,11 +12,11 @@ class Search_list
 public:
     int total_tiles;
 
-    std::deque<Tile *> to_be_searched;
+    std::deque<Coordinates> to_be_searched;
 
-    virtual void add_tile(Tile *t) { to_be_searched.push_back(t); }
+    virtual void add_tile(Tile *t) { to_be_searched.push_back({t->room, t->row, t->col}); }
 
-    virtual Tile *remove_tile() = 0;
+    virtual Coordinates remove_tile() = 0;
 
     bool is_empty() { return to_be_searched.empty(); }
 
@@ -29,7 +29,7 @@ class queue_Search_list : public Search_list
 public:
     // void add_tile(Tile *t) override { to_be_searched.push_back(*t); }
 
-    Tile *remove_tile() override;
+    Coordinates remove_tile() override;
 };
 
 class stack_Search_list : public Search_list
@@ -38,7 +38,7 @@ class stack_Search_list : public Search_list
 public:
     // void add_tile(Tile *t) override { to_be_searched.push_back({t->room, t->row, t->col}); }
 
-    Tile *remove_tile() override;
+    Coordinates remove_tile() override;
 
     ~stack_Search_list() {}
 };
