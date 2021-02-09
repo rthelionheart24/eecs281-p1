@@ -13,6 +13,9 @@
 class Map
 {
 private:
+	//Vectorized representation of the map
+	std::vector<std::vector<std::vector<Tile>>> layout;
+
 	//Number of rooms in the map
 	unsigned int num_rooms;
 
@@ -24,9 +27,6 @@ private:
 
 	//Reading mode
 	char input_mode, output_mode = 'u';
-
-	//Vectorized representation of the map
-	std::vector<std::vector<std::vector<Tile>>> layout;
 
 	//Location of starting and ending positions
 	Tile *starting, *ending;

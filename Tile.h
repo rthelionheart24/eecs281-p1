@@ -9,7 +9,7 @@ struct Tile
     unsigned int row;
     unsigned int col;
 
-        char type = '.';
+    char type = '.';
     char previous = 't';
     bool discover = false;
 };
