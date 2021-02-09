@@ -5,6 +5,9 @@ void Map::initialize(unsigned int in_num_rooms,
                      unsigned int in_size_room,
                      char in_input_mode)
 {
+    num_rooms = in_num_rooms;
+    size_room = in_size_room;
+    input_mode = in_input_mode;
 
     layout.resize(static_cast<unsigned int>(num_rooms));
     for (unsigned int i = 0; i < num_rooms; i++)
@@ -16,9 +19,6 @@ void Map::initialize(unsigned int in_num_rooms,
         }
     }
 
-    num_rooms = in_num_rooms;
-    size_room = in_size_room;
-    input_mode = in_input_mode;
 }
 int Map::get_options(int argc, char *argv[])
 {
