@@ -73,7 +73,7 @@ public:
 
 	bool check_legal_type(char c);
 
-	bool check_legal_coord(std::string dimension, unsigned int coord);
+	bool check_legal_coord(char dimension, unsigned int coord);
 };
 
 #endif //P1_MAP_H

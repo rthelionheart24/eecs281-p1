@@ -175,17 +175,17 @@ void Map::read_list()
         }
 
         //Check for illegal coordinates
-        if (!check_legal_coord("room", room))
+        if (!check_legal_coord('1', room))
         {
             std::cerr << "Invalid room number\n";
             exit(1);
         }
-        if (!check_legal_coord("row", row))
+        if (!check_legal_coord('2', row))
         {
             std::cerr << "Invalid row number\n";
             exit(1);
         }
-        if (!check_legal_coord("col", col))
+        if (!check_legal_coord('3', col))
         {
             std::cerr << "Invalid column number\n";
             exit(1);
@@ -266,9 +266,9 @@ bool Map::movable(char direction, unsigned int room,
     }
 }
 
-bool Map::check_legal_coord(std::string dimension, unsigned int coord)
+bool Map::check_legal_coord(char dimension, unsigned int coord)
 {
-    if (dimension == "room")
+    if (dimension == '1')
         return coord < num_rooms;
     return coord < size_room;
 }

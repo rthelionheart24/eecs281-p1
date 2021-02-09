@@ -246,25 +246,25 @@ void output_map(Map &map)
 		 << ", row " << map.get_starting()->row
 		 << ", column " << map.get_starting()->col << "\n";
 
-	Tile *temp = map.get_starting();
-	while (temp->type != 'C')
-	{
+	//Tile *temp = map.get_starting();
+	// while (temp->type != 'C')
+	// {
 
-		if (temp->type == 'n')
-			temp = map.get_tile(temp->room, temp->row - 1, temp->col);
-		else if (temp->type == 's')
-			temp = map.get_tile(temp->room, temp->row + 1, temp->col);
-		else if (temp->type == 'w')
-			temp = map.get_tile(temp->room, temp->row, temp->col - 1);
-		else if (temp->type == 'e')
-			temp = map.get_tile(temp->room, temp->row, temp->col + 1);
-		else
-		{
-			Tile *warp = temp;
-			temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'), temp->row, temp->col);
-			warp->type = 'p';
-		}
-	}
+	// 	if (temp->type == 'n')
+	// 		temp = map.get_tile(temp->room, temp->row - 1, temp->col);
+	// 	else if (temp->type == 's')
+	// 		temp = map.get_tile(temp->room, temp->row + 1, temp->col);
+	// 	else if (temp->type == 'w')
+	// 		temp = map.get_tile(temp->room, temp->row, temp->col - 1);
+	// 	else if (temp->type == 'e')
+	// 		temp = map.get_tile(temp->room, temp->row, temp->col + 1);
+	// 	else
+	// 	{
+	// 		Tile *warp = temp;
+	// 		temp = map.get_tile(static_cast<unsigned int>(temp->type - '0'), temp->row, temp->col);
+	// 		warp->type = 'p';
+	// 	}
+	// }
 
 	for (unsigned int room = 0; room < map.get_num_room(); room++)
 	{
