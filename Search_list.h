@@ -10,9 +10,9 @@ class Search_list
 {
 
 public:
-    std::deque<Tile *> to_be_searched;
-
     int total_tiles;
+
+    std::deque<Tile *> to_be_searched;
 
     virtual void add_tile(Tile *t) { to_be_searched.push_back(t); }
 

@@ -49,10 +49,7 @@ public:
 				  unsigned int row,
 				  unsigned int col) { layout[room][row][col].discover = true; }
 
-	Tile *get_starting() const
-	{
-		return starting;
-	}
+	Tile *get_starting() const { return starting; }
 
 	Tile *get_ending() const { return ending; }
 

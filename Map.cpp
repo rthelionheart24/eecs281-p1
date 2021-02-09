@@ -18,7 +18,6 @@ void Map::initialize(unsigned int in_num_rooms,
             layout[i][j].resize(static_cast<unsigned int>(size_room));
         }
     }
-
 }
 int Map::get_options(int argc, char *argv[])
 {
