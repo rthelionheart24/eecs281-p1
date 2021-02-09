@@ -1,11 +1,6 @@
 //Project Identifier: B99292359FFD910ED13A7E6C7F9705B8742F0D79
 #include "Search_list.h"
 
-void Search_list::add_tile(Tile *t)
-{
-    to_be_searched.push_back(t);
-}
-
 Tile *queue_Search_list::remove_tile()
 {
 
