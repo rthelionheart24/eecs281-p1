@@ -60,18 +60,14 @@ public:
 				   unsigned int row,
 				   unsigned int col) { return &layout[room][row][col]; }
 
-	Tile *get_tile(coordinates c) { return &layout[c.room][c.row][c.col]; }
-
 	void set_prev(char prev, unsigned int room,
 				  unsigned int row, unsigned int col) { layout[room][row][col].previous = prev; }
 
 	bool movable(char direction, unsigned int room,
 				 unsigned int row, unsigned int col);
 
-	unsigned int get_size_room()
-	{
-		return size_room;
-	}
+	unsigned int get_size_room() { return size_room; }
+
 	unsigned int get_num_room() { return num_rooms; }
 
 	char get_output_mode() { return output_mode; }

@@ -15,9 +15,4 @@ struct Tile
     bool discover = false;
 };
 
-struct coordinates
-{
-    unsigned int room, row, col;
-};
-
 #endif

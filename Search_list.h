@@ -14,7 +14,7 @@ public:
 
     std::deque<Tile *> to_be_searched;
 
-    virtual void add_tile(Tile *t) { to_be_searched.push_back(t); }
+    virtual void add_tile(Tile *t);
 
     virtual Tile *remove_tile() = 0;
 
