@@ -102,6 +102,7 @@ void Map::read_map()
 
     unsigned int room = 0, col = 0, row = 0;
     char type;
+    Tile temp;
     std::string junk;
 
     while (std::cin >> type)
@@ -121,17 +122,17 @@ void Map::read_map()
         }
 
         //Push tile into the map
-        Tile temp = {room, row, col, type};
+        temp = {type};
         layout[room][row][col] = temp;
 
         //check for starting and ending point
         if (type == 'S')
         {
-            starting = &layout[room][row][col];
+            starting = {room, row, col};
         }
         if (type == 'C')
         {
-            ending = &layout[room][row][col];
+            ending = {room, row, col};
         }
 
         col++;
@@ -154,6 +155,7 @@ void Map::read_list()
 {
     unsigned int room, col, row;
     char type, junk;
+    Tile temp;
     std::string junk_line;
 
     while (std::cin >> type)
@@ -192,77 +194,66 @@ void Map::read_list()
         }
 
         //Push tile into the map
-        Tile temp = {room, row, col, type};
+        temp = {type};
         layout[room][row][col] = temp;
 
         //check for starting and ending point
         if (type == 'S')
         {
-            starting = &layout[room][row][col];
+            starting = {room, row, col};
         }
         if (type == 'C')
         {
-            ending = &layout[room][row][col];
-        }
-    }
-    for (unsigned int room = 0; room < num_rooms; room++)
-    {
-        for (unsigned int row = 0; row < size_room; row++)
-        {
-            for (unsigned int col = 0; col < size_room; col++)
-            {
-                layout[room][row][col].room = room;
-                layout[room][row][col].row = row;
-                layout[room][row][col].col = col;
-            }
+            ending = {room, row, col};
         }
     }
 }
 
-bool Map::movable(char direction, unsigned int room,
-                  unsigned int row, unsigned int col)
+bool Map::movable(char direction, Coordinates c)
 {
+    Tile current = get_tile(c);
+
     if (direction == 'n')
     {
-        if (row == 0)
+        if (c.row == 0)
             return false;
-        return layout[room][row - 1][col].type != '#' &&
-               layout[room][row - 1][col].type != '!' &&
-               !layout[room][row - 1][col].discover;
+        return layout[c.room][c.row - 1][c.col].type != '#' &&
+               layout[c.room][c.row - 1][c.col].type != '!' &&
+               !layout[c.room][c.row - 1][c.col].discover;
     }
 
     else if (direction == 's')
     {
-        if (row == size_room - 1)
+        if (c.row == size_room - 1)
             return false;
-        return layout[room][row + 1][col].type != '#' &&
-               layout[room][row + 1][col].type != '!' &&
-               !layout[room][row + 1][col].discover;
+        return layout[c.room][c.row + 1][c.col].type != '#' &&
+               layout[c.room][c.row + 1][c.col].type != '!' &&
+               !layout[c.room][c.row + 1][c.col].discover;
     }
     else if (direction == 'e')
     {
-        if (col == size_room - 1)
+        if (c.col == size_room - 1)
             return false;
-        return layout[room][row][col + 1].type != '#' &&
-               layout[room][row][col + 1].type != '!' &&
-               !layout[room][row][col + 1].discover;
+        return layout[c.room][c.row][c.col + 1].type != '#' &&
+               layout[c.room][c.row][c.col + 1].type != '!' &&
+               !layout[c.room][c.row][c.col + 1].discover;
     }
 
     else if (direction == 'w')
     {
-        if (col == 0)
+        if (c.col == 0)
             return false;
-        return layout[room][row][col - 1].type != '#' &&
-               layout[room][row][col - 1].type != '!' &&
-               !layout[room][row][col - 1].discover;
+        return layout[c.room][c.row][c.col - 1].type != '#' &&
+               layout[c.room][c.row][c.col - 1].type != '!' &&
+               !layout[c.room][c.row][c.col - 1].discover;
     }
     else
     {
-        Tile *warp = &layout[static_cast<unsigned int>(layout[room][row][col].type - '0')][row][col];
+        Tile warp = layout[static_cast<unsigned int>(current.type - '0')][c.row][c.col];
 
-        return warp->type != '#' &&
-               warp->type != '!' &&
-               !warp->discover;
+        return warp.type != '#' &&
+               warp.type != '!' &&
+               !warp.discover;
     }
 }
 

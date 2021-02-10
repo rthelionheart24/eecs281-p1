@@ -29,7 +29,7 @@ private:
 	char input_mode, output_mode = 'u';
 
 	//Location of starting and ending positions
-	Tile *starting, *ending;
+	Coordinates starting, ending;
 
 public:
 	void initialize(unsigned int in_num_rooms,
@@ -45,25 +45,21 @@ public:
 	//Read in list-form data
 	void read_list();
 
-	void discover(unsigned int room,
-				  unsigned int row,
-				  unsigned int col) { layout[room][row][col].discover = true; }
+	void discover(Coordinates c) { layout[c.room][c.row][c.col].discover = true; }
 
-	Tile *get_starting() const { return starting; }
+	Coordinates get_starting() const { return starting; }
 
-	Tile *get_ending() const { return ending; }
+	Coordinates get_ending() const { return ending; }
 
-	Tile *get_tile(unsigned int room,
+	Tile &get_tile(unsigned int room,
 				   unsigned int row,
-				   unsigned int col) { return &layout[room][row][col]; }
+				   unsigned int col) { return layout[room][row][col]; }
 
-	Tile *get_tile(Coordinates c) { return &layout[c.room][c.row][c.col]; }
+	Tile &get_tile(Coordinates c) { return layout[c.room][c.row][c.col]; }
 
-	void set_prev(char prev, unsigned int room,
-				  unsigned int row, unsigned int col) { layout[room][row][col].previous = prev; }
+	void set_prev(char prev, Coordinates c) { layout[c.room][c.row][c.col].previous = prev; }
 
-	bool movable(char direction, unsigned int room,
-				 unsigned int row, unsigned int col);
+	bool movable(char direction, Coordinates c);
 
 	unsigned int get_size_room() { return size_room; }
 

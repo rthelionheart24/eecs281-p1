@@ -14,7 +14,7 @@ public:
 
     std::deque<Coordinates> to_be_searched;
 
-    virtual void add_tile(Tile *t) { to_be_searched.push_back({t->room, t->row, t->col}); }
+    virtual void add_tile(Coordinates c) { to_be_searched.push_back(c); }
 
     virtual Coordinates remove_tile() = 0;
 

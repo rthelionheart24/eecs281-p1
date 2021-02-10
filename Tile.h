@@ -11,11 +11,6 @@ struct Coordinates
 
 struct Tile
 {
-
-    unsigned int room;
-    unsigned int row;
-    unsigned int col;
-
     char type = '.';
     char previous = 't';
     bool discover = false;
